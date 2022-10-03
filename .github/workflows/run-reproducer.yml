@@ -4,7 +4,7 @@ jobs:
   gradle:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
@@ -12,5 +12,18 @@ jobs:
       with:
         java-version: 11
     - uses: gradle/gradle-build-action@v2
+
+    - name: Execute Gradle build
+      run: ./gradlew build
+
+    - name: Check test files copied (1)
+      uses: andstor/file-existence-action@v1
       with:
-        arguments: help --info
+        files: "build/resources/test/foo/bar.txt"
+        allow_failure: true
+
+    - name: Check test files copied (2)
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "build/resources/test/hello/hello.txt"
+        allow_failure: true
